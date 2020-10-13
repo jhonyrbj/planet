@@ -1,0 +1,357 @@
+swagger: '2.0'
+info:
+  description: This is a sample Planet API
+  version: 1.0.0
+  title: PLANET-API
+host: planet
+basePath: /api/v1
+schemes:
+  - https
+  - http
+paths:
+  /planet:
+    post:
+      tags:
+        - planet
+      summary: Add a new planet
+      description: ''
+      operationId: addPlanet
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: planetRequest
+          description: Planet object that needs to be added
+          required: true
+          schema:
+            $ref: '#/definitions/PlanetRequest'
+      responses:
+        '201':
+          description: Planet added successful.
+          schema:
+            $ref: '#/definitions/PlanetResponse'
+        '400':
+          description: |
+            Bad Request.
+            This endpoint ca throw the following erros:
+            * Invalid Planet
+            `
+            {"code": "3", "message":"Invalid request body."}
+            `
+            * Planet is null or empty
+            `
+            {"code": "1", "message":"Planet is required."}
+            `
+          schema:
+            $ref: '#/definitions/ErrorModel'
+        '404':
+          description: |
+            Not Found.
+            This endpoint ca throw the following erros:
+            * Planet not foundin SWAPI.
+            `
+            {"code": "6", "message":"Planet not found in SWAPI."}
+            `
+          schema:
+            $ref: '#/definitions/ErrorModel'
+        '500':
+          description: |
+            Internal Server Error.
+            This endpoint ca throw the following erros:
+            * Failed integration with SWAPI.
+            `
+            {"code": "2", "message":"Failed integration with SWAPI."}
+            `
+          schema:
+            $ref: '#/definitions/ErrorModel'
+        default:
+          description: Default.
+          schema:
+            $ref: '#/definitions/ErrorModel'
+    get:
+      tags:
+        - planet
+      summary: List all planets
+      description: ''
+      operationId: listAllPlanets
+      produces:
+        - application/json
+      parameters:
+        - in: query
+          name: page
+          description: Page number of results to return.
+          required: false
+          type: integer
+      responses:
+        '200':
+          description: Listed planets successful.
+          schema:
+            $ref: '#/definitions/PlanetsResponsePage'
+        '404':
+          description: |
+            Not Found.
+            This endpoint ca throw the following erros:
+            * Planets not found.
+            `
+            {"code": "5", "message":"Planets not found."}
+            `
+          schema:
+            $ref: '#/definitions/ErrorModel'
+        '500':
+          $ref: '#/responses/InternalServerError'
+        default:
+          description: Default.
+          schema:
+            $ref: '#/definitions/ErrorModel'
+  /planet/list-planets-swapi:
+    get:
+      tags:
+        - planet
+      summary: List all planets from Star Wars API.
+      description: ''
+      operationId: listAllPlanetsSWAPI
+      produces:
+        - application/json
+      parameters:
+        - in: query
+          name: page
+          description: Page number of results to return.
+          required: false
+          type: integer
+      responses:
+        '200':
+          description: Listed planets successful.
+          schema:
+            $ref: '#/definitions/PlanetResponseSWAPIPage'
+        '404':
+          description: |
+            Not Found.
+            This endpoint ca throw the following erros:
+            * Planets not foundin SWAPI.
+            `
+            {"code": "7", "message":"Planets not found in SWAPI."}
+            `
+          schema:
+            $ref: '#/definitions/ErrorModel'
+        '500':
+          description: |
+            Internal Server Error.
+            This endpoint ca throw the following erros:
+            * Failed integration with SWAPI.
+            `
+            {"code": "2", "message":"Failed integration with SWAPI."}
+            `
+          schema:
+            $ref: '#/definitions/ErrorModel'
+        default:
+          description: Default.
+          schema:
+            $ref: '#/definitions/ErrorModel'
+  /planet/find-by-name:
+    get:
+      tags:
+        - planet
+      summary: Find Planet by name
+      description: Returns a single planet
+      operationId: findPlanetByName
+      produces:
+        - application/json
+      parameters:
+        - name: name
+          in: query
+          description: Name values that need to be considered for filter
+          required: true
+          type: string
+      responses:
+        '200':
+          description: One planet successful.
+          schema:
+            $ref: '#/definitions/PlanetResponse'
+        '404':
+          description: |
+            Not Found.
+            This endpoint ca throw the following erros:
+            * Planet not found.
+            `
+            {"code": "4", "message":"Planet not found."}
+            `
+          schema:
+            $ref: '#/definitions/ErrorModel'
+        '500':
+          $ref: '#/responses/InternalServerError'
+        default:
+          description: Default.
+          schema:
+            $ref: '#/definitions/ErrorModel'
+  '/planet/{planetId}':
+    get:
+      tags:
+        - planet
+      summary: Find planet by ID
+      description: Returns a single planet
+      operationId: getPlanetById
+      produces:
+        - application/json
+      parameters:
+        - name: planetId
+          in: path
+          description: ID of planet to return
+          required: true
+          type: string
+      responses:
+        '200':
+          description: Find planet successful.
+          schema:
+            $ref: '#/definitions/PlanetResponse'
+        '404':
+          description: |
+            Not Found.
+            This endpoint ca throw the following erros:
+            * Planet not found.
+            `
+            {"code": "4", "message":"Planet not found."}
+            `
+          schema:
+            $ref: '#/definitions/ErrorModel'
+        '500':
+          $ref: '#/responses/InternalServerError'
+        default:
+          description: Default.
+          schema:
+            $ref: '#/definitions/ErrorModel'
+    delete:
+      tags:
+        - planet
+      summary: Deletes a planet
+      description: ''
+      operationId: deletePlanet
+      produces:
+        - application/json
+      parameters:
+        - name: planetId
+          in: path
+          description: Planet id to delete
+          required: true
+          type: string
+      responses:
+        '204':
+          description: Delete planet successful.
+        '404':
+          description: |
+            Not Found.
+            This endpoint ca throw the following erros:
+            * Planet not found.
+            `
+            {"code": "4", "message":"Planet not found."}
+            `
+          schema:
+            $ref: '#/definitions/ErrorModel'
+        '500':
+          $ref: '#/responses/InternalServerError'
+        default:
+          description: Default.
+          schema:
+            $ref: '#/definitions/ErrorModel'
+definitions:
+  PlanetRequest:
+    type: object
+    required:
+      - name
+      - climate
+      - terrain
+    properties:
+      name:
+        type: string
+        example: Tatooine
+      climate:
+        type: string
+        example: arid
+      terrain:
+        type: string
+        example: desert
+  PlanetResponse:
+    type: object
+    properties:
+      id:
+        type: string
+        example: "1"
+      name:
+        type: string
+        example: Tatooine
+      climate:
+        type: string
+        example: arid
+      terrain:
+        type: string
+        example: desert
+      qttMovies:
+        type: integer
+        format: int32
+        example: 0
+  PlanetResponseSWAPI:
+    type: object
+    properties:
+      name:
+        type: string
+        example: Tatooine
+      climate:
+        type: string
+        example: arid
+      terrain:
+        type: string
+        example: desert
+      films:
+        type: array
+        items:
+          type: string
+          example: "https://swapi.dev/api/films/2/"
+
+  PlanetResponseSWAPIPage:
+    type: object
+    properties:
+      content:
+        type: array
+        items:
+          $ref: '#/definitions/PlanetResponseSWAPI'
+      last:
+        type: boolean
+      totalElements:
+        type: number
+      totalPages:
+        type: number
+      numberOfElements:
+        type: number
+      first:
+        type: boolean
+
+  PlanetsResponsePage:
+    type: object
+    properties:
+      content:
+        type: array
+        items:
+          $ref: '#/definitions/PlanetResponse'
+      last:
+        type: boolean
+      totalElements:
+        type: number
+      totalPages:
+        type: number
+      numberOfElements:
+        type: number
+      first:
+        type: boolean
+  ErrorModel:
+    type: object
+    properties:
+      code:
+        type: string
+      message:
+        type: string
+responses:
+  InternalServerError:
+    description: Internal Server Error.
+    schema:
+      $ref: '#/definitions/ErrorModel'
