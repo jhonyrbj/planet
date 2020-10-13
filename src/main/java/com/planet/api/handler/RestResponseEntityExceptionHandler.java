@@ -4,8 +4,10 @@ import com.google.gson.Gson;
 import com.planet.api.exception.RestErrorException;
 import com.planet.api.model.Error;
 import lombok.extern.log4j.Log4j2;
+import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.ConversionNotSupportedException;
 import org.springframework.beans.TypeMismatchException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -126,6 +128,11 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
     @ExceptionHandler(EmptyResultDataAccessException.class)
     public ResponseEntity<Object> handleException(EmptyResultDataAccessException e){
         return getStringResponseEntity(e, HttpStatus.NOT_FOUND,singleError(PLANET_API_PLANET_NOT_FOUND_CODE));
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<Object> handleException(DataIntegrityViolationException e){
+        return getStringResponseEntity(e, HttpStatus.BAD_REQUEST,singleError(PLANET_API_PLANET_ALREADY_EXISTS_CODE));
     }
 
     @ExceptionHandler(Exception.class)

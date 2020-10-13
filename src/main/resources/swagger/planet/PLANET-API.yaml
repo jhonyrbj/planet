@@ -44,6 +44,10 @@ paths:
             `
             {"code": "1", "message":"Planet is required."}
             `
+            * Planet already exists.
+            `
+            {"code": "8", "message":"Planet already exists."}
+            `
           schema:
             $ref: '#/definitions/ErrorModel'
         '404':
