@@ -79,23 +79,6 @@ public class SWAPIServiceImplTest {
         service.findPlanetByName("name");
     }
 
-
-
-    public Page<PlanetResponseSWAPI> findAllPlanet(Integer page){
-        ResponseEntity<PlanetResponsePageSWAPI> responseEntity =
-                swapiClient.findAllPlanet(page == null || page < 1 ? 1: page);
-        if (responseEntity == null){
-            throw new NotFoundException(singleError(SWAPI_PLANETS_NOT_FOUND_CODE));
-        }
-        PlanetResponsePageSWAPI planetResponsePageSWAPI = responseEntity.getBody();
-        if (planetResponsePageSWAPI == null){
-            throw new NotFoundException(singleError(SWAPI_PLANETS_NOT_FOUND_CODE));
-        }
-        PageRequest pageReq
-                = PageRequest.of(page == null || page < 1 ? 0: page - 1, PAGE_SIZE);
-        return new PageImpl<>(planetResponsePageSWAPI.getResults(),pageReq, planetResponsePageSWAPI.getCount());
-    }
-
     @Test
     public void shouldFindAllPlanetSuccessfully(){
         when(swapiClient.findAllPlanet(anyInt())).thenReturn(ResponseEntity.ok(createPlanetResponsePageSWAPI()));
