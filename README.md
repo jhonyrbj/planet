@@ -2,7 +2,7 @@
 
 This is the server-side of the Planet API project.
 
-##Documentation
+## Documentation
   
 For the correct use of this API, you will need to look at the documentation located in the file [PLANET-API.yaml](./src/main/resources/swagger/planet/PLANET-API.yaml) with the [Swagger Editor](https://editor.swagger.io/)
 
